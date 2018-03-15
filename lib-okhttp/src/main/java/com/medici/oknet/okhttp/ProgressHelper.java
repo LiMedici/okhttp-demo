@@ -1,11 +1,12 @@
 package com.medici.oknet.okhttp;
 
-import com.squareup.okhttp.Interceptor;
-import com.squareup.okhttp.OkHttpClient;
-import com.squareup.okhttp.RequestBody;
-import com.squareup.okhttp.Response;
 
 import java.io.IOException;
+
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 /**
  * @desc 进度回调辅助类
@@ -21,7 +22,7 @@ public class ProgressHelper {
      */
     public static OkHttpClient addProgressResponseListener(OkHttpClient client, final ProgressResponseListener progressListener){
         //克隆
-        OkHttpClient clone = client.clone();
+        final OkHttpClient clone = client;
         //增加拦截器
         clone.networkInterceptors().add(new Interceptor() {
             @Override
@@ -43,7 +44,7 @@ public class ProgressHelper {
      * @param progressRequestListener 进度回调接口
      * @return 包装后的进度回调请求体
      */
-    public static ProgressRequestBody addProgressRequestListener(RequestBody requestBody,ProgressRequestListener progressRequestListener){
+    public static ProgressRequestBody addProgressRequestListener(RequestBody requestBody, ProgressRequestListener progressRequestListener){
         //包装请求体
         return new ProgressRequestBody(requestBody,progressRequestListener);
     }

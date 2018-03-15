@@ -1,10 +1,9 @@
 package com.medici.oknet.okhttp;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.RequestBody;
-
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import okio.Buffer;
 import okio.BufferedSink;
 import okio.ForwardingSink;

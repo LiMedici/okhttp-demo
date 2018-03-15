@@ -1,9 +1,10 @@
 package com.medici.oknet;
 
 import com.medici.oknet.cookie.SimpleCookieJar;
-import com.medici.oknet.https.HttpsUtils;
+import com.medici.oknet.https.Https;
 import com.medici.oknet.listener.DisposeDataHandle;
-import com.medici.oknet.response.CommonFileCallback;
+import com.medici.oknet.okhttp.ProgressHelper;
+import com.medici.oknet.okhttp.ProgressResponseListener;
 import com.medici.oknet.response.CommonJsonCallback;
 
 import java.io.IOException;
@@ -43,7 +44,8 @@ public class CommonOkHttpClient {
             public Response intercept(Chain chain) throws IOException {
                 Request request = chain.request()
                         .newBuilder()
-                        .addHeader("User-Agent", "Imooc-Mobile") // 标明发送本次请求的客户端
+                        // 标明发送本次请求的客户端
+                        .addHeader("User-Agent", "Android-Mobile")
                         .build();
                 return chain.proceed(request);
             }
@@ -56,22 +58,13 @@ public class CommonOkHttpClient {
         /**
          * trust all the https point
          */
-        okHttpClientBuilder.sslSocketFactory(HttpsUtils.initSSLSocketFactory(), HttpsUtils.initTrustManager());
+        okHttpClientBuilder.sslSocketFactory(Https.initSSLSocketFactory(), Https.initTrustManager());
         mOkHttpClient = okHttpClientBuilder.build();
     }
 
     public static OkHttpClient getOkHttpClient() {
         return mOkHttpClient;
     }
-
-//    /**
-//     * 指定cilent信任指定证书
-//     *
-//     * @param certificates
-//     */
-//    public static void setCertificates(InputStream... certificates) {
-//        mOkHttpClient.newBuilder().sslSocketFactory(HttpsUtils.getSslSocketFactory(certificates, null, null)).build();
-//    }
 
     /**
      * 通过构造好的Request,Callback去发送请求
@@ -90,9 +83,17 @@ public class CommonOkHttpClient {
         return call;
     }
 
-    public static Call downloadFile(Request request, DisposeDataHandle handle) {
+    public static Call downloadFile(Request request, ProgressResponseListener progressResponseListener) {
+        // 包装Response使其支持进度回调
+        Call call = ProgressHelper.addProgressResponseListener(mOkHttpClient, progressResponseListener).newCall(request);
+        call.enqueue(progressResponseListener);
+        return call;
+    }
+
+    public static Call uploadFile(Request request,DisposeDataHandle handle){
+        // 开始请求
         Call call = mOkHttpClient.newCall(request);
-        call.enqueue(new CommonFileCallback(handle));
+        call.enqueue(new CommonJsonCallback(handle));
         return call;
     }
 }

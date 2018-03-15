@@ -87,17 +87,16 @@ public class ResponseEntityToModule {
         if (fc instanceof ParameterizedType)// 锟角凤拷锟斤拷
         {
             ParameterizedType pt = (ParameterizedType) fc;
-            if (pt.getActualTypeArguments()[0] instanceof Class)// 锟斤拷指锟斤拷锟斤拷锟斤拷,锟斤拷锟斤拷"?"
-            {
-                Class<?> clss = (Class<?>) pt.getActualTypeArguments()[0];
+            if (pt.getActualTypeArguments()[0] instanceof Class) {
+                Class<?> clazz = (Class<?>) pt.getActualTypeArguments()[0];
 
                 if (jsonObj.get(fieldName) instanceof JSONArray) {
                     JSONArray array = jsonObj.getJSONArray(fieldName);
                     for (int i = 0; i < array.length(); i++) {
                         if (array.get(i) instanceof JSONObject) {
-                            objList.add(parseJsonObjectToModule(array.getJSONObject(i), clss));
+                            objList.add(parseJsonObjectToModule(array.getJSONObject(i), clazz));
                         } else {
-                            if (clss.isAssignableFrom(array.get(i).getClass())) {
+                            if (clazz.isAssignableFrom(array.get(i).getClass())) {
                                 objList.add(array.get(i));
                             }
                         }

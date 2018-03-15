@@ -9,14 +9,14 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * OkHttpIntercepter，use set okhttp call header
- * Created by Tamic on 2017-06-02.
+ * @desc OkHttpInterceptor，use set okhttp call header
+ * @author cnbilzh
  */
-public class OkHttpIntercepter implements Interceptor {
+public class OkHttpInterceptor implements Interceptor {
 
     private Map<String, String> headers;
 
-    public OkHttpIntercepter(Map<String, String> headers) {
+    public OkHttpInterceptor(Map<String, String> headers) {
         this.headers = headers;
     }
 

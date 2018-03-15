@@ -1,5 +1,9 @@
 package com.medici.oknet.request;
 
+import com.medici.oknet.okhttp.ProgressHelper;
+import com.medici.oknet.okhttp.ProgressRequestBody;
+import com.medici.oknet.okhttp.ProgressRequestListener;
+
 import java.io.File;
 import java.util.Map;
 
@@ -116,7 +120,6 @@ public class CommonRequest {
 
     /**
      * 文件上传请求
-     *
      * @return
      */
     private static final MediaType FILE_TYPE = MediaType.parse("application/octet-stream");
@@ -139,5 +142,27 @@ public class CommonRequest {
             }
         }
         return new Request.Builder().url(url).post(requestBody.build()).build();
+    }
+
+    public static Request createMultiPostRequest(String url, RequestParams params, ProgressRequestListener listener) {
+
+        MultipartBody.Builder requestBody = new MultipartBody.Builder();
+        requestBody.setType(MultipartBody.FORM);
+        if (params != null) {
+
+            for (Map.Entry<String, Object> entry : params.fileParams.entrySet()) {
+                if (entry.getValue() instanceof File) {
+                    requestBody.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + entry.getKey() + "\""),
+                            RequestBody.create(FILE_TYPE, (File) entry.getValue()));
+                } else if (entry.getValue() instanceof String) {
+
+                    requestBody.addPart(Headers.of("Content-Disposition", "form-data; name=\"" + entry.getKey() + "\""),
+                            RequestBody.create(null, (String) entry.getValue()));
+                }
+            }
+        }
+        // 进行包装，使其支持进度回调
+        ProgressRequestBody progressRequestBody = ProgressHelper.addProgressRequestListener(requestBody.build(),listener);
+        return new Request.Builder().url(url).post(progressRequestBody).build();
     }
 }

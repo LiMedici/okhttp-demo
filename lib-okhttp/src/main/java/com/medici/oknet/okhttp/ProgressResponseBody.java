@@ -1,10 +1,9 @@
 package com.medici.oknet.okhttp;
 
-import com.squareup.okhttp.MediaType;
-import com.squareup.okhttp.ResponseBody;
-
 import java.io.IOException;
 
+import okhttp3.MediaType;
+import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
 import okio.ForwardingSource;
@@ -50,7 +49,7 @@ public class ProgressResponseBody extends ResponseBody {
      * @throws IOException 异常
      */
     @Override 
-    public long contentLength() throws IOException {
+    public long contentLength() {
         return responseBody.contentLength();
     }
 
@@ -60,7 +59,7 @@ public class ProgressResponseBody extends ResponseBody {
      * @throws IOException 异常
      */
     @Override 
-    public BufferedSource source() throws IOException {
+    public BufferedSource source() {
         if (bufferedSource == null) {
             //包装
             bufferedSource = Okio.buffer(source(responseBody.source()));

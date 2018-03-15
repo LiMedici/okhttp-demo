@@ -1,6 +1,6 @@
 package com.medici.oknet.okhttp;
 
-import com.squareup.okhttp.Callback;
+import okhttp3.Callback;
 
 /**
  * @desc 响应体进度回调接口 例如文件下载
